@@ -1,0 +1,49 @@
+</div>
+<script>
+let socket = new io();
+    let filas = document.getElementById("filas");
+    let formulario = document.getElementById("form");
+    formulario.addEventListener("submit", e =>{
+        e.preventDefault();
+        let productos ={
+            titulo: e.target[0].value,
+            precio: e.target[1].value,
+            url: e.target[2].value
+        }
+        if(productos.titulo == "" || productos.precio == "" || productos.url == "" ){
+            alert("Un campo está incompleto");
+        }
+        console.log(productos);
+        socket.emit("datos",productos)
+    })
+
+    socket.on("produc", data =>{
+        if(data.length > 0){
+        armarTabla(data)}
+    })
+
+    socket.on("tabla", data =>{
+        armarTabla(data)
+    })
+
+  function armarTabla(data){
+    let tabla = ``;
+    for(const datos of data){
+        console.log(datos.titulo)
+      tabla += `
+              <tr>
+                <th>${datos.titulo}</th>
+                <th>${datos.precio}</th>
+                <th><img src="${datos.url}" alt="" style="height: 50px; width: 50px;"></th>                        
+              </tr>
+              `
+    }
+    filas.innerHTML = tabla
+  }
+
+
+
+</script>
+
+</body>
+</html>
