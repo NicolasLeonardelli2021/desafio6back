@@ -42,7 +42,38 @@ let socket = new io();
   }
 
 
+        //let mensaje = document.getElementById("mensaje")
+        let parrafo = document.getElementById("parrafo")
+        let form_data_user = document.getElementById('data_user')
 
+        form_data_user.addEventListener("submit", e =>{
+            e.preventDefault();
+            let chat = {
+                mail: e.target[0].value,
+                message: e.target[1].value
+            }               
+            if(chat.mail == "" || chat.message == ""){
+              alert("Un campo incompleto");
+            }
+            socket.emit("nuevoChat", chat)
+        })
+
+        socket.on("chatInit", data => {
+            if(data.length > 0){
+                fill_message(data)
+            } 
+          })
+        socket.on("mensaje", data =>{
+          fill_message(data)
+        })
+
+          function fill_message(data){
+            let sms_html = ``;
+            for(const sms of data){
+                sms_html += `<p><b>${sms.mail}</b>|${sms.date}|:<i> ${sms.message} </i></p>`
+            }
+            parrafo.innerHTML = sms_html
+        }
 </script>
 
 </body>
